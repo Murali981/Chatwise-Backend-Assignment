@@ -75,19 +75,19 @@ exports.getFriendCommentedPosts = async (req, res) => {
 
     console.log(friendIds);
 
-    // 2. Find comments made by friends
+    // Find comments made by friends
     const friendComments = await Comment.find({
       user: { $in: friendIds },
     });
 
     console.log(friendComments);
 
-    // 3. Get unique post IDs from these comments
+    // Get unique post IDs from these comments
     const postIds = [...new Set(friendComments.map((comment) => comment.post))];
 
     console.log(postIds);
 
-    // 4. Get posts that aren't from friends but have friends' comments
+    // Get posts that aren't from friends but have friends' comments
     const nonFriendPosts = await Post.find({
       $and: [
         { _id: { $in: postIds } }, // Posts with friends' comments
