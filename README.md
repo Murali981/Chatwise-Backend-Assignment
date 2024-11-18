@@ -1,68 +1,142 @@
-# Social Media Platform MongoDB Schema
-This document describes the MongoDB schema and API operations for a basic social media platform. The platform supports user registration, friend requests, text posts, and comments.
+# Social Media Platform Backend API
+
+## Overview
+This is a MongoDB-based social media platform API that enables user registration, friend management, post creation, and commenting functionality. The API provides endpoints for managing user feed based on friend relationships and comment interactions.
 
 ## Collections Overview
-1. Users Collection
-Stores basic user information 
 
+## User Model
+```json
 {
-  "_id": "ObjectId",
-  "username": "String",
-  "email": "String",
-  "password": "String", // hashed
-  "name": "String",
-  "createdAt": "Date"
+    "_id": "ObjectId",
+    "username": "String",
+    "email": "String",
+    "password": "String",  
+    "name": "String",
+    "createdAt": "Date"
 }
+```
 
-2. FriendRequests Collection
-Manages friend requests between users.
+## FriendRequest Model
+```json
 {
-  "_id": "ObjectId",
-  "sender": "ObjectId",    // reference to Users collection
-  "receiver": "ObjectId",  // reference to Users collection
-  "status": "String",      // "pending", "accepted", "rejected"
-  "createdAt": "Date"
+    "_id": "ObjectId",
+    "sender": "ObjectId",    // reference to Users collection
+    "receiver": "ObjectId",  // reference to Users collection
+    "status": "String",      // "pending", "accepted", "rejected"
+    "createdAt": "Date"
 }
-3. Posts Collection
-Stores text-only posts created by users.
+```
+
+## Post Model
+```json
 {
-  "_id": "ObjectId",
-  "user": "ObjectId",     // reference to Users collection
-  "content": "String",
-  "createdAt": "Date"
+    "_id": "ObjectId",
+    "user": "ObjectId",     // reference to Users collection
+    "content": "String",
+    "createdAt": "Date"
 }
-4. Comments Collection
-Stores comments on posts.
+```
 
+## Comment Model
+```json
 {
-  "_id": "ObjectId",
-  "post": "ObjectId",     // reference to Posts collection
-  "user": "ObjectId",     // reference to Users collection
-  "content": "String",
-  "createdAt": "Date"
+    "_id": "ObjectId",
+    "post": "ObjectId",     // reference to Posts collection
+    "user": "ObjectId",     // reference to Users collection
+    "content": "String",
+    "createdAt": "Date"
 }
+```
+
+## API Documentation
+
+### Get Friends' Posts
+- Endpoint: `/api/feed/friends-posts`
+- Method: GET
+- Query Parameters
+  ```json
+  
+   {
+  "userId": "user-id-to-fetch-feed-for"
+  }
+  
+  ```
+- Response:
+  ```json
+  {
+  "status": "success",
+  "data": {
+      "posts": [
+          {
+              "_id": "post_id",
+              "content": "Post content",
+              "user": {
+                  "_id": "user_id",
+                  "username": "username",
+                  "name": "User Name"
+              },
+              "createdAt": "timestamp"
+          }
+      ]
+  }
+}
+```
+
+### Get Friend Commented Posts
+- Endpoint: `/api/feed/friend-commented-posts`
+- Method: GET
+- Query Parameters
+```json
+{
+  "userId": "user-id-to-fetch-feed-for"
+}
+```
+- Response:
+  ```json
+  {
+  "status": "success",
+  "data": {
+      "posts": [
+          {
+              "_id": "post_id",
+              "content": "Post content",
+              "user": {
+                  "_id": "user_id",
+                  "username": "username",
+                  "name": "User Name"
+              },
+              "createdAt": "timestamp"
+          }
+      ]
+  }
+}
+```
+## Feed Visibility Rules
+
+1) A user can see posts that:
+- Were created by their friends
+- Were created by non-friends but have comments from their friends
+
+2) Operation Flow:
+- Friends' Posts:
+   - Find accepted friend requests
+   - Extract friend IDs
+   - Fetch friends' posts
+   - Sort by creation date
+- Friend-Commented Posts:
+   - Find accepted friend requests
+   - Get friend IDs
+   - Find friends' comments
+   - Get associated posts
+   - Filter non-friend posts
+   - Sort by creation date
+
+# Additional Information
+This API is designed to be simple and efficient, focusing on core social media functionality
+    
 
 
-## Required API Operations for Social Media Feed
-1. Friends' Posts Feed API
-Purpose: Retrieve all posts created by a user's friends.
-- GET /api/feed/friends-posts
-Query Parameter: userId
-Operation Flow:
-Find all accepted friend requests for the given user.
-Extract friend IDs from these requests.
-Fetch all posts created by these friends.
-Sort posts by creation date (newest first).
 
-2. Friend-Commented Posts API
-Purpose: Retrieve posts from non-friends where a user's friends have commented.
-Endpoint: GET /api/feed/friend-commented-posts
-Query Parameter: userId
-Operation Flow:
-Find all accepted friend requests for the given user.
-Extract the list of friend IDs.
-Find all comments made by these friends.
-Get posts associated with these comments.
-Filter the results to show only posts from non-friends.
-Sort posts by creation date (newest first).
+  
 
