@@ -82,8 +82,8 @@ This is a MongoDB-based social media platform API that enables user registration
   }
 }
 ```
-
-### Get Friend Commented Posts
+```
+###  Get Friend Commented Posts
 - Endpoint: `/api/feed/friend-commented-posts`
 - Method: GET
 - Query Parameters
@@ -111,6 +111,7 @@ This is a MongoDB-based social media platform API that enables user registration
       ]
   }
 }
+```
 ```
 ## Feed Visibility Rules
 
