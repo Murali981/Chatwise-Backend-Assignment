@@ -1,12 +1,10 @@
-Social Media Platform MongoDB Schema
+# Social Media Platform MongoDB Schema
 This document describes the MongoDB schema and API operations for a basic social media platform. The platform supports user registration, friend requests, text posts, and comments.
 
-Collections Overview
+## Collections Overview
 1. Users Collection
-Stores basic user information and authentication details.
+Stores basic user information 
 
-json
-Copy code
 {
   "_id": "ObjectId",
   "username": "String",
@@ -15,11 +13,9 @@ Copy code
   "name": "String",
   "createdAt": "Date"
 }
+
 2. FriendRequests Collection
 Manages friend requests between users.
-
-json
-Copy code
 {
   "_id": "ObjectId",
   "sender": "ObjectId",    // reference to Users collection
@@ -29,9 +25,6 @@ Copy code
 }
 3. Posts Collection
 Stores text-only posts created by users.
-
-json
-Copy code
 {
   "_id": "ObjectId",
   "user": "ObjectId",     // reference to Users collection
@@ -41,8 +34,6 @@ Copy code
 4. Comments Collection
 Stores comments on posts.
 
-json
-Copy code
 {
   "_id": "ObjectId",
   "post": "ObjectId",     // reference to Posts collection
@@ -50,16 +41,19 @@ Copy code
   "content": "String",
   "createdAt": "Date"
 }
-Required API Operations for Social Media Feed
+
+
+## Required API Operations for Social Media Feed
 1. Friends' Posts Feed API
 Purpose: Retrieve all posts created by a user's friends.
-Endpoint: GET /api/feed/friends-posts
+- GET /api/feed/friends-posts
 Query Parameter: userId
 Operation Flow:
 Find all accepted friend requests for the given user.
 Extract friend IDs from these requests.
 Fetch all posts created by these friends.
 Sort posts by creation date (newest first).
+
 2. Friend-Commented Posts API
 Purpose: Retrieve posts from non-friends where a user's friends have commented.
 Endpoint: GET /api/feed/friend-commented-posts
